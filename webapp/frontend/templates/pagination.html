@@ -1,0 +1,13 @@
+<div class="pagination">
+  <span class="pagination__block">
+    {% if page_obj.has_previous %}
+      <a class="pagination__item" href="?page=1{% if request.GET.order_by %}&order_by={{ request.GET.order_by }}{% endif %}">&laquo; first</a>
+      <a class="pagination__item" href="?page={{ page_obj.previous_page_number }}{% if request.GET.order_by %}&order_by={{ request.GET.order_by }}{% endif %}">previous</a>
+    {% endif %}
+    <span class="pagination__info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a class="pagination__item" href="?page={{ page_obj.next_page_number }}{% if request.GET.order_by %}&order_by={{ request.GET.order_by }}{% endif %}">next</a>
+      <a class="pagination__item" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.order_by %}&order_by={{ request.GET.order_by }}{% endif %}">last &raquo;</a>
+    {% endif %}
+  </span>
+</div>

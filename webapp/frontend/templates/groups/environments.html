@@ -1,0 +1,4 @@
+<option value="">Select an environment</option>
+{% for environment in environments %}
+<option value="{{ environment.pk }}">{{ environment.name }}</option>
+{% endfor %}

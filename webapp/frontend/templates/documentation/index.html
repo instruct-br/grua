@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block header_current %}
+<h1>Documentation</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="alert alert--hide"></div>
+
+  <table class="table">
+    <tr>
+      <th>
+        Name
+      </th>
+      <th>
+        Link
+      </th>
+    </tr>
+    <tr>
+      <td>Requirements, Design Options and Constraints</td>
+      <td><a href="{% url 'schema-redoc' %}">
+        Swagger REDOC</a></td>
+    </tr>
+    <tr>
+      <td>Web API Reference Documentation</td>
+      <td><a href="{% url 'schema-swagger-ui' %}">
+        Web Swagger API</a></td>
+    </tr>
+    <tr>
+      <td>JSON API Reference Documentation</td>
+      <td><a href="{% url 'schema-json' '.json' %}">
+        JSON Swagger API</a></td>
+    </tr>
+    <tr>
+      <td>YAML API Reference Documentation</td>
+      <td><a href="{% url 'schema-json' '.yaml' %}">YAML Swagger API</a></td>
+    </tr>
+
+  </table>
+{% endblock content %}

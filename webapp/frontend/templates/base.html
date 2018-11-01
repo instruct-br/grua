@@ -1,0 +1,118 @@
+{% load staticfiles %}
+<!doctype html>
+<html class="no-js" lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>GRUA - Puppet Classifier</title>
+    <meta name="description" content="Puppet Classifier">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="shortcut icon" type="image/ico" href="{% static "img/favicon.ico" %}">
+    <link rel="stylesheet" href="{% static "dist/css/main.css" %} ">
+  </head>
+
+  <body>
+    <div class="float-action align-right">
+      <span>
+        <a href="{{ request.path }}" class="link link--danger">Cancel</a>
+        <button class="form-input--submit commit-changes">Commit changes</button><br>
+      </span>
+    </div>
+
+    <div class="loader">
+      <div class="spinner"></div>
+      <div>Loading...</div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav__top">
+        <a class="nav-toggle nav-toggle--close" title="Close menu">
+          &times;
+        </a>
+      </div>
+
+      <div class="nav--scroll">
+
+        <ul class="nav-main">
+          <li class="nav-main__item"><a class="nav-main__link" href="{% url 'master-zones-index' %}?clear=1">Master zones</a></li>
+          <li class="nav-main__item"><a class="nav-main__link" href="{% url 'groups-index' %}?clear=1">Groups</a></li>
+        </ul>
+
+        <div class="nav__header">
+          <h2>Master Zones</h2>
+          <a href="{% url 'master-zones-new' %}" class="nav__plus" title="Create new master zone">+</a>
+        </div>
+        <ul class="nav-list">
+          {% for master_zone in master_zones %}
+            <li class="nav-list__item"><a class="nav-list__link" href="{% url 'master-zones-index' %}?master_zone={{ master_zone.id }}">{{ master_zone.label }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </nav>
+
+    <div class="main-body">
+      <header class="header">
+        <div class="header-top">
+          <div class="header-top__svg">
+            <a class="nav-toggle" title="Open menu">
+              <i class="fas fa-bars"></i>
+            </a>
+            <a href="{% url 'index' %}" class="logo" title="GRUA"><img src="{% static "img/grua.svg" %}"></a>
+          </div>
+          {% if user.is_authenticated %}
+            <span class="header-top__actions">
+              <span>{{ user.username }}</span>
+              {% if user.is_superuser %}
+              <a href="{% url 'logs-index' %}">Logs</a>
+              {% endif %}
+              <a href="{% url 'logout' %}">Logout</a>
+            </span>
+          {% endif %}
+        </div>
+        <div class="header-info">
+          {% block header_left %}
+          {% endblock %}
+          {% block header_right %}
+          {% endblock %}
+        </div>
+        <div class="header-current">
+          {% block header_current %}
+          {% endblock %}
+        </div>
+      </header>
+      <div class="content">
+        {% block content %}
+        {% endblock %}
+        {% if page_obj %}
+          {% include 'pagination.html' %}
+        {% endif %}
+      </div>
+    </div>
+    {% if deleting %}
+      <div class="modal modal--opened">
+        <div class="modal__container">
+          <div class="modal__header">
+            <h2>Are you sure to remove?</h2>
+            <a href="{% url cancel_delete %}" class="modal-close">&times;</a>
+          </div>
+          <div class="modal__body">
+            <p>This action cannot be undone, are you sure?</p>
+          </div>
+          <div class="modal__footer">
+            <form method="post">
+              {% csrf_token %}
+              <a class="form-input--submit form-input--submit-default" href="{% url cancel_delete %}">Cancel</a>
+              <input class="form-input--submit form-input--submit-danger" type="submit" value="Remove"/>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <script src="{% static "dist/js/main.js" %} "></script>
+    <script defer src="{% static "js/fontawesome.min.js" %} "></script>
+    <script defer src="{% static "js/fa-solid.min.js" %} "></script>
+    <script defer src="{% static "js/fa-regular.min.js" %} "></script>
+  <body>
+</html>

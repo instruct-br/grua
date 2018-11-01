@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block header_current %}
+<ul class="tabs">
+  <li class="tabs__item"><a href="{% url 'groups-classes' group.id %}" class="tabs__link">Classes</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-nodes' group.id %}" class="tabs__link">Matching Nodes</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-rules' group.id %}" class="tabs__link tabs__link--current">Rules</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-variables' group.id %}" class="tabs__link">Variables</a></li>
+</ul>
+{% endblock %}
+{% block header_left %}
+<div class="header-info__parent">
+  <strong>{{ group.master_zone }}</strong>
+  <div class="header-info__group">
+    <h2>{{ group }}</h2><a href="{% url 'groups-index' %}">Change</a>
+  </div>
+</div>
+{% endblock %}
+{% block header_right %}
+<div class="header-info__actions">
+  <a href="{% url 'groups-edit' group.id %}" class="header-info__action">Edit</a>
+  <a href="{% url 'groups-delete' group.id %}" class="header-info__action header-info__action--danger"><i class="fas fa-trash"></i> Remove</a>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="alert alert--hide">
+</div>
+
+<div class="alert alert--danger alert--hide">
+  A problem ocurred, try again later!
+</div>
+<form autocomplete="off">
+<div class="top-info margin-bottom">
+<p>Write rules to dynamically assign nodes to this group based on fact values. Begin with “trusted” to designate a trusted fact.</p>
+  <div class="inline-form-item">
+    <input type="radio" name="nodesrule" value="ALL" id="all_nodes" checked="checked"><label for="all_nodes">Nodes must match all rules.</label>
+  </div>
+  <div class="inline-form-item">
+    <input type="radio" name="nodesrule" value="ANY" id="any_nodes"><label for="any_nodes">Nodes may match any rule.</label>
+  </div>
+</div>
+
+<table class="class-block__table">
+  <thead>
+  <tr>
+    <th class="th-1">Fact</th>
+    <th class="th-2">Operator</th>
+    <th class="th-3">Value</th>
+    <th class="align-center"></th>
+    <th class="th-4 align-right"></th>
+  </tr>
+  <tr>
+    <td>
+      <span class="form-input autocomplete">
+        <input type="hidden" class="autocomplete__id" id="fact_id">
+        <input type="text" autocomplete="off" class="autocomplete__name form-input--text" id="fact" data-values="facts" required>
+        <ul class="autocomplete__list">
+        </ul>
+      </span>
+    </td>
+    <td class="equal">
+      <span class="form-input--select">
+        <select id="operator">
+          <option value="=">=</option>
+          <option value="!=">!=</option>
+          <option value="~">~</option>
+          <option value="!~">!~</option>
+          <option value="&gt;">&gt;</option>
+          <option value="&gt;=">&gt;=</option>
+          <option value="&lt;">&lt;</option>
+          <option value="&lt;=">&lt;=</option>
+        </select>
+      </span>
+    </td>
+    <td>
+      <span class="form-input">
+        <input type="text" class="form-input--text" id="value" required>
+      </span>
+    </td>
+    <td class="align-center white"></td>
+    <td class="align-right">
+      <button class="form-input--submit add-parameter" disabled="disabled">Add Parameter</button>
+    </td>
+  </tr>
+  </thead>
+  <tbody id="rules_lines">
+  </tbody>
+</table>
+
+<div class="top-info margin-bottom" style="padding:20px 10px 10px 10px;">
+<p>Number of nodes pinned to this group: <span id="totalpinned">0</span></p>
+</div>
+
+<table class="class-block__table">
+  <thead>
+  <tr>
+    <th class="th-1">Certname</th>
+    <th class="th-4 align-right"></th>
+  </tr>
+  <tr>
+    <td>
+      <span class="form-input autocomplete">
+        <input type="hidden" class="autocomplete__id" id="node_id">
+        <input type="text" autocomplete="off" class="autocomplete__name form-input--text" id="nodename" data-values="certname" data-name="certname" required>
+        <ul class="autocomplete__list" id="autocomplete__nodes">
+        </ul>
+      </span>
+    </td>
+    <td class="align-right">
+      <button class="form-input--submit add-node" disabled="disabled">Pin node</button>
+    </td>
+  </tr>
+  </thead>
+  <tbody id="pinned_nodes">
+  </tbody>
+</table>
+</form>
+
+<script src="{% static "js/js.cookie.min.js" %}"></script>
+<script src="{% static "js/axios.min.js" %}"></script>
+<script>
+const csrftoken = Cookies.get('csrftoken');
+const urlGroup = "{% url 'rule-detail' group.id %}";
+const urlFacts = "{% url 'fact-list' %}?master_zone={{ master_zone.id }}";
+const urlNodes = "{% url 'node-list' %}?master_zone={{ master_zone.id }}";
+</script>
+<script src="{% static "dist/js/autocomplete.js" %} "></script>
+<script src="{% static "dist/js/rules.js" %} "></script>
+{% endblock content %}

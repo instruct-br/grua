@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post" class="form form--body">
+  {% csrf_token %}
+  <div class="form__content">
+    {% for field in form %}
+      <div class="form__group form__group--inline">
+        {{ field.label_tag }}
+        <span class="form-input">
+          {% if field.errors %}
+            {{ field }}
+            {% for error in field.errors %}
+              <br><span class="form-input__error">{{ error }}</span>
+            {% endfor %}
+          {% else %}
+            {{ field }}
+          {% endif %}
+        </span>
+      </div>
+    {% endfor %}
+    <div class="form__group form__group--inline">
+      <span class="required">* Required fields</span>
+      <input type="submit" value="Save Master" class="form-input--submit">
+    </div>
+  </div>
+</form>
+{% endblock content %}

@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+faktory = "*"
+requests = "*"
+glom = "*"
+pypuppetdb = "*"
+
+[dev-packages]
+coverage = "*"
+black = "==18.5b0"
+responses = "*"
+"flake8" = "*"

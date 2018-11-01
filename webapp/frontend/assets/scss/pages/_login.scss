@@ -1,0 +1,22 @@
+.login {
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+
+  &__container {
+    width: 90%;
+    max-width: 340px;
+  }
+
+  &__body {
+    background-color: white;
+    padding: 30px 20px 20px 20px;
+    border-left: #e6e6e6 1px solid;
+    border-right: #e6e6e6 1px solid;
+    border-bottom-color: #ccc;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  }
+}

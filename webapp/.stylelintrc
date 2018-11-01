@@ -1,0 +1,9 @@
+{
+  "basedir": "./node_modules",
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "indentation": 2,
+    "at-rule-no-unknown": null,
+    "no-empty-source": null
+  }
+}

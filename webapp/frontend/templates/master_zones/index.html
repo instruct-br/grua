@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block header_current %}
+<h1>Master Zones</h1>
+{% endblock %}
+{% block header_left %}
+<div class="header-info__parent">
+  <div class="header-info__group">
+    {% if zone %}
+      <strong>{{ zone }}</strong><a href="{% url 'zones-index' %}">Change</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block header_right %}
+<div class="header-info__actions">
+  <a href="{% url 'master-zones-new' %}" class="header-info__action"><i class="fas fa-plus"></i> New Master zone</a>
+</div>
+{% endblock %}
+{% block content %}
+    <form role="form" action="{% url 'master-zones-index' %}" method="post" class="form filter">
+      {% csrf_token %}
+      <div class="form__group">
+        <label for="label">Label</label>
+          <input name="label" class="form-input--text" type="text"
+              {% if master_zone_list_filter.label %}value={{ master_zone_list_filter.label }}{% endif %} />
+      </div>
+
+      <div class="form__group">
+        <input type="submit" value="Filter" class="form-input--submit" />
+        <a href="?clear=1" class="link link--danger">Clear</a>
+      </div>
+      <br><br>
+    </form>
+  {% if page_obj %}
+  <div class="alert alert--hide"></div>
+  <table class="table">
+    <tr>
+      <th>
+        <a style="pointer-events: all"
+            href="?order_by={{ order_by.label }}">
+          Label
+          <span>
+            {% if request.GET.order_by == '-label' %}<i class="fa fa-chevron-up"></i>{% elif request.GET.order_by == 'label' %}<i class="fa fa-chevron-down"></i>{% endif %}
+          </span>
+        </a>
+      </th>
+      <th>
+        <a style="pointer-events: all"
+            href="?order_by={{ order_by.address }}">
+          Address
+          <span>
+            {% if request.GET.order_by == '-address' %}<i class="fa fa-chevron-up"></i>{% elif request.GET.order_by == 'address' %}<i class="fa fa-chevron-down"></i>{% endif %}
+          </span>
+        </a>
+      </th>
+      <th>Groups</th>
+      <th></th>
+    </tr>
+    {% for master_zone in page_obj %}
+      <tr>
+        <td>{{ master_zone.label }}</td>
+        <td>{{ master_zone.address }}</td>
+        <td><a href="{% url 'groups-index' %}?master_zone={{ master_zone.id }}">{{ master_zone.groups.count }}</a></td>
+        <td class="align-right">
+          <span class="table__action">
+            <a class="table__action-item sync-masterzone" title="Sync nodes, classes and facts" data-masterzone="{{ master_zone.id }}" data-label="{{ master_zone.label }}"><i class="fas fa-sync"></i> Sync</a>
+            <a href="{% url 'master-zones-edit' master_zone.id %}" class="table__action-item">Edit</a>
+            <a href="{% url 'master-zones-delete' master_zone.id %}" class="table__action-item table__action-item--danger">Remove</a>
+          </span>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  <script src="{% static "js/js.cookie.min.js" %}"></script>
+  <script src="{% static "js/axios.min.js" %}"></script>
+  <script>
+  const csrftoken = Cookies.get('csrftoken');
+  const urlSync = "{% url 'masterzone-refresh-info' %}";
+  </script>
+  <script src="{% static "dist/js/masterzone.js" %} "></script>
+{% else %}
+  <div class="alert alert--empty">
+    <h2>No master zone found</h2>
+    <p>Please, <a href="{% url 'master-zones-new' %}">click here</a> to add a master zone </p>
+      <a href="{% url 'master-zones-new' %}" class="button">New Master zone</a>
+  </div>
+{% endif %}
+{% endblock content %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block header_current %}
+<h1>Add Master Zone</h1>
+{% endblock %}
+{% block header_left %}
+<div class="header-info__actions">
+  <a href="{% url 'master-zones-index' %}" class="header-info__action"><i class="fas fa-arrow-left"></i> Back</a>
+</div>
+{% endblock %}
+{% block content %}
+<form method="post" class="form form--body">
+  {% csrf_token %}
+  <div class="form__content">
+    {% for field in form %}
+      <div class="form__group form__group--inline">
+        <label for="{{ field.label }}">{{ field.label }}
+        {% if field.field.required %}<span>*</span>{% endif %}</label>
+        <span class="form-input">
+          {% if field.errors %}
+            {{ field }}
+            {% for error in field.errors %}
+              <br><span class="form-input__error">{{ error }}</span>
+            {% endfor %}
+          {% else %}
+            {{ field }}
+          {% endif %}
+        </span>
+      </div>
+    {% endfor %}
+    <div class="form__group form__group--inline">
+      <span class="required">* Required fields</span>
+      <input type="submit" value="Add Master zone" class="form-input--submit">
+    </div>
+  </div>
+</form>
+{% endblock content %}

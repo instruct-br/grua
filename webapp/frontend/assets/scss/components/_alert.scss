@@ -1,0 +1,51 @@
+.alert {
+  width: 100%;
+  margin-bottom: 10px;
+  border: lighten($default, 20%) 1px solid;
+  background-color: white;
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.08);
+  padding: 10px 30px 10px 10px;
+  position: relative;
+  font-size: 15px;
+
+  &--hide {
+    display: none;
+  }
+
+  &--danger {
+    color: $danger;
+    border: $danger 1px solid;
+    background-color: lighten($danger, 40%);
+  }
+
+  &--success {
+    color: $success;
+    border: $success 1px solid;
+    background-color: lighten($success, 45%);
+  }
+
+  &--danger,
+  &--success {
+    &::after {
+      content: '\00d7';
+      cursor: pointer;
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      display: inline-block;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  &--empty {
+    padding: 40px 5%;
+    text-align: center;
+
+    p {
+      margin: 10px 0;
+    }
+  }
+}

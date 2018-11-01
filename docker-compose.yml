@@ -1,0 +1,46 @@
+version: '2'
+
+services:
+  db:
+    image: postgres
+    hostname: db
+  work_server:
+    image: contribsys/faktory
+    ports:
+      - "7420:7420"
+  webapp:
+    build: ./webapp
+    command: python3 manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - work_server
+    environment:
+      - FAKTORY_URL=tcp://work_server:7419
+      - ALLOWED_HOSTS=webapp,localhost
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+    links:
+      - db
+
+  scheduler:
+    build: ./scheduler
+    command: pipenv run python3 scheduler.py
+    depends_on:
+      - webapp
+      - work_server
+    environment:
+      - FAKTORY_URL=tcp://work_server:7419
+
+  worker:
+    build: ./workers
+    command: python3 worker.py
+    depends_on:
+      - webapp
+      - work_server
+    environment:
+      - FAKTORY_URL=tcp://work_server:7419
+    links:
+      - db

@@ -1,0 +1,76 @@
+.modal {
+  width: 100%;
+  height: 100%;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba($color4, 0.95);
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  position: fixed;
+  display: none;
+
+  &__container {
+    width: 100%;
+    max-width: 340px;
+    background-color: $color5;
+    height: auto;
+  }
+
+  &__header {
+    padding: 15px 20px;
+    border-bottom: #ccc 1px solid;
+    position: relative;
+
+    h2 {
+      font-size: 18px;
+    }
+
+    .modal-close {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      right: 0;
+      top: 0;
+      text-align: center;
+      line-height: 30px;
+      font-size: 20px;
+      color: $default;
+      cursor: pointer;
+      z-index: 1;
+      text-decoration: none;
+
+      &:hover {
+        color: $danger;
+      }
+    }
+  }
+
+  &__body {
+    padding: 20px;
+
+    p {
+      font-size: 16px;
+    }
+  }
+
+  &__footer {
+    padding: 15px;
+    border-top: #ccc 1px solid;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+
+    form {
+      width: 100%;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+    }
+  }
+
+  &--opened {
+    display: flex;
+  }
+}

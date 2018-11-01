@@ -1,0 +1,55 @@
+body,
+html {
+  background-color: $color5;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: $font2;
+  overflow-x: hidden;
+  font-size: 13px;
+}
+
+.content {
+  padding: 15px;
+
+  a {
+    color: $color3;
+
+    &:hover {
+      color: darken($color3, 20%);
+    }
+  }
+}
+
+h1 {
+  font-family: $font1;
+}
+
+.align {
+  &-left {
+    text-align: left;
+  }
+
+  &-right {
+    text-align: right;
+  }
+}
+
+.margin {
+  &-bottom {
+    margin-bottom: 10px;
+  }
+}
+
+.link {
+  &--loading {
+    pointer-events: none;
+    color: #999 !important;
+  }
+}
+
+.refresh.link--loading {
+  cursor: default !important;
+}

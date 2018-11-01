@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block header_current %}
+<ul class="tabs">
+  <li class="tabs__item"><a href="{% url 'groups-classes' group.id %}" class="tabs__link tabs__link--current">Classes</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-nodes' group.id %}" class="tabs__link">Matching Nodes</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-rules' group.id %}" class="tabs__link">Rules</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-variables' group.id %}" class="tabs__link">Variables</a></li>
+</ul>
+{% endblock %}
+{% block header_left %}
+<div class="header-info__parent">
+    <strong>{{ group.master_zone }} | {{ group.environment }}</strong>
+  <div class="header-info__group">
+    <h2>{{ group }}</h2><a href="{% url 'groups-index' %}">Change</a>
+  </div>
+</div>
+{% endblock %}
+{% block header_right %}
+<div class="header-info__actions">
+  <a href="{% url 'groups-edit' group.id %}" class="header-info__action">Edit</a>
+  <a href="{% url 'groups-delete' group.id %}" class="header-info__action header-info__action--danger"><i class="fas fa-trash"></i> Remove</a>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="alert alert--hide">
+</div>
+
+<form autocomplete="off">
+  <div class="add-class">
+    <div class="form">
+      <p>Declare the class that you want to apply do nodes in this group. The classes will be applied on the next run.</p>
+      <div class="form__group form__group--inline">
+        <label>Add new class</label>
+        <span class="form-input autocomplete">
+          <input type="hidden" class="autocomplete__id" id="class_id">
+          <input type="text" autocomplete="off" id="class_name" class="autocomplete__name form-input--text" data-values="classes" required>
+          <ul class="autocomplete__list">
+          </ul>
+        </span>
+        <button class="form-input--submit add-classes" disabled="disabled">Add Class</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div id="classes_container">
+</div>
+</div>
+</div>
+
+<script src="{% static "js/js.cookie.min.js" %}"></script>
+<script src="{% static "js/axios.min.js" %}"></script>
+<script>
+const csrftoken = Cookies.get('csrftoken');
+const urlGroup = "{% url 'configuration-detail' group.id %}";
+const urlParameters = "{% url 'parameter-list' %}?puppet_class=";
+const urlClasses = "{% url 'puppetclass-list' %}?environment={{ group.environment.id }}";
+</script>
+<script src="{% static "dist/js/autocomplete.js" %} "></script>
+<script src="{% static "dist/js/classes.js" %} "></script>
+{% endblock content %}

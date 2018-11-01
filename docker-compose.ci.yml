@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile.dev
+    environment:
+      - DEBUG=True
+      - WEBAPP_USER=admin
+      - WEBAPP_PASS=admin
+  worker:
+    build:
+      context: ./workers
+      dockerfile: Dockerfile.dev
+    environment:
+      - FAKTORY_URL=tcp://work_server:7419
+      - WEBAPP_USER=admin
+      - WEBAPP_PASS=admin

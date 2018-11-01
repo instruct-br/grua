@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block header_current %}
+<h1>Logs</h1>
+{% endblock %}
+{% block content %}
+{% if page_obj %}
+<table class="table">
+  <tr>
+    {% for log_header in list_headers %}
+    <th>{{ log_header }}</th>
+    {% endfor %}
+  </tr>
+  {% for log in page_obj %}
+    <tr>
+      {% for log_data in log.list_data %}
+      <td>{{ log_data }}</td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+{% else %}
+<div class="alert alert--empty">
+  <h2>No log found</h2>
+</div>
+{% endif %}
+{% endblock content %}

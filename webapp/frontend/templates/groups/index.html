@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block header_current %}
+<h1>Groups</h1>
+{% endblock %}
+{% block header_left %}
+<div class="header-info__parent">
+  <div class="header-info__group">
+    {% if master_zone %}
+      <strong>{{ master_zone }}</strong>
+      <a href="{% url 'master-zones-index' %}?master_zone={{ master_zone.id }}">Change</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block header_right %}
+<div class="header-info__actions">
+  <a href="{% url 'groups-new' %}" class="header-info__action"><i class="fas fa-plus"></i> New Group</a>
+</div>
+{% endblock %}
+{% block content %}
+  <form role="form" action="{% url 'groups-index' %}" method="post" class="form filter">
+    {% csrf_token %}
+
+    <div class="form__group">
+      <label for="tags">Filter Tags</label>
+        <input name="tags" class="form-input--text" placeholder="Group tags" {% if group_list_filter.tags %}value={{group_list_filter.tags|cut:'"'}}{% endif %} />
+      {% if group_list_filter.master_zone %}
+      <input type="hidden" name="master_zone" value="{{group_list_filter.master_zone}}" />
+      {% endif %}
+    </div>
+
+    <div class="form__group">
+      <label for="label">Label</label>
+        <input name="label" class="form-input--text" type="text"
+               {% if group_list_filter.label %}value={{ group_list_filter.label }}{% endif %} />
+    </div>
+
+    <div class="form__group">
+      <label for="description">Description</label>
+        <input name="description" class="form-input--text" type="text"
+               {% if group_list_filter.description %}value={{ group_list_filter.description }}{% endif %} />
+    </div>
+
+    <div class="form__group">
+      <label for="environment__name">Environment</label>
+      <select name="environment__name">
+        <option value="">Select</option>
+        {% for env in all_environments_names %}
+          <option value="{{ env }}" {% if group_list_filter.environment__name == env %} selected{% endif %}>
+            {{ env }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form__group">
+      <label for="master_zone">Master Zone</label>
+      <select name="master_zone">
+        <option value="">Select</option>
+        {% for m_zone in all_master_zones %}
+          <option value="{{ m_zone.id }}" {% if group_list_filter.master_zone == m_zone.id %} selected{% endif %}>
+            {{ m_zone.label }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form__group">
+      <input type="submit" value="Filter" class="form-input--submit" />
+      <a href="?clear=1" class="link link--danger">Clear</a>
+    </div>
+  </form>
+
+{% if page_obj %}
+  <table class="table">
+    <tr>
+      <th>
+        <a href="?order_by={{ order_by.label }}">
+          Label
+            <span>
+              {% if request.GET.order_by == '-label' %}<i class="fa fa-chevron-up"></i>{% elif request.GET.order_by == 'label' %}<i class="fa fa-chevron-down"></i>{% endif %}
+            </span>
+        </a>
+      </th>
+      <th>
+        <a href="?order_by={{ order_by.master_zone__label }}">
+          Master Zone
+          <span>
+            {% if request.GET.order_by == '-master_zone__label' %}<i class="fa fa-chevron-up"></i>{% elif request.GET.order_by == 'master_zone__label' %}<i class="fa fa-chevron-down"></i>{% endif %}
+          </span>
+        </a>
+      </th>
+      <th>
+        <a href="?order_by={{ order_by.environment__name }}">
+          Environment
+          <span>
+            {% if request.GET.order_by == '-environment__name' %}<i class="fa fa-chevron-up"></i>{% elif request.GET.order_by == 'environment__name' %}<i class="fa fa-chevron-down"></i>{% endif %}
+          </span>
+        </a>
+      </th>
+      <th>
+        <a href="?order_by={{ order_by.description }}">
+          Description
+          <span>
+            {% if request.GET.order_by == '-description' %}<i class="fa fa-chevron-up"></i>{% elif request.GET.order_by == 'description' %}<i class="fa fa-chevron-down"></i>{% endif %}
+          </span>
+        </a>
+      </th>
+      <th>Tags</th>
+      <th></th>
+    </tr>
+    {% for group in page_obj %}
+      <tr>
+        <td>{{ group.label }}</td>
+        <td><a href="{% url 'master-zones-index' %}?master_zone={{ group.master_zone.id }}">{{ group.master_zone.label }}</a></td>
+        <td>{{ group.environment }}</td>
+        <td>{{ group.description }}</td>
+        <td><span title="{% for tag in group.tags.all %}{{tag}}{% if not forloop.last %}, {% endif %}{% endfor %}" class="list-tags">{% for tag in group.tags.all|slice:":3" %}<span>{{tag}}</span>{% endfor %}{% if group.tags.all.count > 3 %}<span>...</span>{% endif %}</span></td>
+        <td class="align-right">
+          <span class="table__action">
+            <a href="{% url 'groups-classes' group.id %}" class="table__action-item">Classify</a>
+            <a href="{% url 'groups-edit' group.id %}" class="table__action-item">Edit</a>
+            <a href="{% url 'groups-delete' group.id %}" class="table__action-item table__action-item--danger">Remove</a>
+          </span>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  <link href="{% static "css/tagify.css" %}" rel="stylesheet">
+  <script src="{% static "js/tagify.min.js" %} "></script>
+  <script src="{% static "dist/js/group.js" %} "></script>
+{% else %}
+  <div class="alert alert--empty">
+    <h2>No groups found</h2>
+    <p>Please, <a href="{% url 'groups-new' %}">click here</a> to add a group</p>
+      <a href="{% url 'groups-new' %}" class="button">New Group</a>
+  </div>
+{% endif %}
+{% endblock content %}

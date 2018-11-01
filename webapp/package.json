@@ -1,0 +1,34 @@
+{
+  "name": "grua",
+  "version": "1.0.0",
+  "scripts": {
+    "scss": "node-sass frontend/assets/scss -o frontend/static/dist/css --output-style compressed",
+    "autoprefixer": "postcss --config postcss.config.js -r frontend/static/dist/css",
+    "babel": "babel frontend/assets/js -d frontend/static/dist/js",
+    "watch:js": "babel --watch frontend/assets/js -d frontend/static/dist/js",
+    "watch:scss": "node-sass --watch frontend/assets/scss -o frontend/static/dist/css",
+    "lint:js": "eslint frontend/assets/js/",
+    "lint:scss": "stylelint frontend/assets/scss/ --syntax scss",
+    "build:css": "npm run scss && npm run autoprefixer",
+    "build:img": "cp -r frontend/assets/img frontend/static/dist/",
+    "build:js": "npm run lint:js && npm run babel",
+    "build:dev": "npm run build:css && npm run build:js",
+    "build": "npm run build:css && npm run build:js && npm run build:img"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.2.1",
+    "babel-cli": "^6.26.0",
+    "babel-minify": "^0.5.0",
+    "babel-preset-airbnb": "^2.6.0",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.7.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1",
+    "node-sass": "^4.9.4",
+    "postcss-cli": "^6.0.0",
+    "stylelint": "^9.6.0",
+    "stylelint-config-standard": "^18.2.0"
+  }
+}

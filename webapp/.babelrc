@@ -1,0 +1,8 @@
+{
+  "presets": ["airbnb"],
+  "env": {
+    "production": {
+      "presets": ["minify"]
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{% load staticfiles %}
+<!doctype html>
+<html class="no-js" lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Puppet Classifier</title>
+    <meta name="description" content="Puppet Classifier">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="shortcut icon" type="image/ico" href="{% static "img/favicon.ico" %}">
+    <link rel="stylesheet" href="{% static "dist/css/main.css" %} ">
+  </head>
+
+  <body class="login">
+    <div class="login__container">
+      <header class="header">
+        <div class="header-top">
+            <a class="logo" title="GRUA"><img src="{% static "img/grua.svg" %}"></a>
+        </div>
+      </header>
+      <div class="login__body">
+        <form method="post" class="form" action="{% url 'login' %}">
+          {% csrf_token %}
+          {% if form.errors %}
+            <span class="form-input__error">Wrong username or password. Please try again.</span><br><br>
+          {% endif %}
+          <div class="form__group form__group--inline">
+            {{ form.username.label_tag }}
+            <span class="form-input">
+              {{ form.username }}
+              <!-- <input type="text" class="form-input--text"> -->
+            </span>
+          </div>
+          <div class="form__group form__group--inline">
+            {{ form.password.label_tag }}
+            <span class="form-input">
+              {{ form.password }}
+              <!-- <input type="password" class="form-input--text"> -->
+            </span>
+          </div>
+          <div class="form__group align-right">
+            <input type="submit" value="login" class="form-input--submit">
+            <input type="hidden" name="next" value="{{ next }}" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

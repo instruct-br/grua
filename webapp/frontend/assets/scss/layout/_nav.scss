@@ -1,0 +1,142 @@
+$navsize: 320px;
+
+.main-body {
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+}
+
+.nav {
+  width: $navsize;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: $color2;
+  overflow: hidden;
+  transform: translateX(-$navsize);
+  transition: all 0.3s ease-in-out;
+  z-index: 10;
+
+  &-toggle {
+    color: white;
+    display: inline-block;
+    padding: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 20px;
+
+    &--close {
+      font-size: 25px;
+    }
+  }
+
+  &__top {
+    background-color: $color2;
+    width: 100%;
+    z-index: 1;
+    height: 46px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 10px;
+  }
+
+  &__header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    padding: 10px 15px;
+    border-bottom: rgba(255, 255, 255, 0.1) 1px solid;
+
+    h2 {
+      color: white;
+    }
+  }
+
+  &__plus {
+    color: white;
+    height: 20px;
+    line-height: 20px;
+    display: inline-block;
+    font-size: 30px;
+    font-weight: normal;
+    font-family: $font1;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      color: $color3;
+    }
+  }
+
+  &-main {
+    padding: 10px;
+    margin: 20px 0;
+
+    &__item {
+      margin-bottom: 5px;
+    }
+
+    &__link {
+      width: 100%;
+      padding: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 12px;
+      color: white;
+      font-family: $font1;
+      text-transform: uppercase;
+      background-color: rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  &-list {
+    &__item {
+      border-bottom: rgba(255, 255, 255, 0.1) 1px solid;
+    }
+
+    &__link {
+      width: 100%;
+      padding: 10px 15px;
+      color: white;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  &--opened {
+    .main-body {
+      transform: translateX($navsize);
+    }
+
+    .nav {
+      transform: translateX(0);
+      box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    .header {
+      .nav-toggle {
+        display: none;
+      }
+    }
+  }
+
+  &--scroll {
+    width: $navsize + 40px;
+    padding-right: 25px;
+    padding-top: 46px;
+    height: 100%;
+    position: absolute;
+    overflow-y: scroll;
+    left: 0;
+    top: 0;
+  }
+}

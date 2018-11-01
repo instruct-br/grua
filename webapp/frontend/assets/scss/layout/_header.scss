@@ -1,0 +1,160 @@
+.header {
+  background-color: $color1;
+
+  &-top {
+    border-bottom: $color2 1px solid;
+    padding: 10px 10px 0 15px;
+    min-height: 46px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+
+    &__svg {
+      display: flex;
+      align-items: center;
+      padding-bottom: 10px;
+    }
+
+    &__actions {
+      span,
+      a {
+        display: inline-block;
+        color: white;
+        font-size: 12px;
+        padding: 4px 12px;
+      }
+    }
+  }
+
+  &-info {
+    min-height: 100px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+
+    strong {
+      color: white;
+      padding: 0 20px 0 5px;
+      font-size: 18px;
+      font-family: $color1;
+    }
+
+    h2 {
+      color: white;
+      padding: 0 20px 0 5px;
+      font-size: 28px;
+      font-family: $color1;
+    }
+
+    &__group {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: flex-start;
+
+      a {
+        color: $color3;
+        font-size: 15px;
+
+        &:hover {
+          color: lighten($color3, 20%);
+        }
+      }
+    }
+
+    &__actions {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: space-between;
+
+      .form-input--select {
+        margin-right: 30px;
+      }
+    }
+
+    &__action {
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      padding: 5px 10px;
+      white-space: nowrap;
+
+      svg {
+        display: inline-block;
+        margin-right: 3px;
+      }
+
+      &:hover {
+        color: $color3;
+      }
+
+      &--danger {
+        color: $danger;
+
+        &:hover {
+          color: lighten($danger, 10%);
+        }
+      }
+    }
+  }
+
+  &-current {
+    min-height: 60px;
+    padding-left: 15px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    h1 {
+      display: inline-block;
+      padding: 0 5px 10px 5px;
+      border-bottom: $color3 8px solid;
+      color: white;
+    }
+  }
+}
+
+.logo {
+  font-family: $font1;
+  color: white;
+  font-size: 18px;
+  text-decoration: none;
+
+  span {
+    font-weight: bold;
+  }
+}
+
+.tabs {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: baseline;
+
+  &__link {
+    display: inline-block;
+    padding: 10px;
+    margin-right: 10px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: transparent 6px solid;
+
+    &:hover {
+      color: $color3;
+    }
+
+    &--current {
+      border-color: $color3;
+      color: $color3;
+    }
+  }
+}

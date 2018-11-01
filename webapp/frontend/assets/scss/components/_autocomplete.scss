@@ -1,0 +1,49 @@
+.autocomplete {
+  position: relative;
+  height: 36px;
+  display: inline-block;
+
+  &__list {
+    float: left;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: white;
+    width: calc(100% + 50px);
+    max-height: 300px;
+    padding-top: 10px;
+    border: #ccc 1px solid;
+    overflow: hidden;
+    overflow-y: auto;
+    display: none;
+
+    &--show {
+      display: block;
+    }
+
+    li {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding: 10px 15px;
+      border-bottom: #eaeaea 1px solid;
+      cursor: pointer;
+
+      &.nothing-found {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      .hl {
+        font-weight: bold;
+        text-decoration: underline;
+      }
+
+      &.search__item:hover {
+        background-color: $color3;
+        color: white;
+      }
+    }
+  }
+}

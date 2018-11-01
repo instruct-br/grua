@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block header_current %}
+<ul class="tabs">
+  <li class="tabs__item"><a href="{% url 'groups-classes' group.id %}" class="tabs__link tabs__link">Classes</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-nodes' group.id %}" class="tabs__link">Matching Nodes</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-rules' group.id %}" class="tabs__link">Rules</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-variables' group.id %}" class="tabs__link tabs__link--current">Variables</a></li>
+</ul>
+{% endblock %}
+{% block header_left %}
+<div class="header-info__parent">
+  <strong>{{ group.master_zone }}</strong>
+  <div class="header-info__group">
+    <h2>{{ group }}</h2><a href="{% url 'groups-index' %}">Change</a>
+  </div>
+</div>
+{% endblock %}
+{% block header_right %}
+<div class="header-info__actions">
+  <a href="{% url 'groups-edit' group.id %}" class="header-info__action">Edit</a>
+  <a href="{% url 'groups-delete' group.id %}" class="header-info__action header-info__action--danger"><i class="fas fa-trash"></i> Remove</a>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="alert alert--hide">
+</div>
+
+<div class="top-info margin-bottom">
+<p>Declare global variables to be used by the nodes in this group.</p>
+</div>
+
+<form autocomplete="off">
+<table class="class-block__table">
+  <thead>
+  <tr>
+    <th class="th-1">Key</th>
+    <th></th>
+    <th class="th-3">Value</th>
+    <th class="th-4 align-right"></th>
+  </tr>
+  <tr>
+    <td>
+      <span class="form-input">
+        <input type="text" class="form-input--text" id="key" required>
+      </span>
+    </td>
+    <td class="equal">=</td>
+    <td>
+      <span class="form-input">
+        <input type="text" class="form-input--text" id="value" required>
+      </span>
+    </td>
+    <td class="align-right">
+      <button class="form-input--submit add-variable" disabled="disabled">Add Variable</button>
+    </td>
+  </tr>
+  </thead>
+  <tbody id="variables_lines">
+  </tbody>
+</table>
+</form>
+
+<script src="{% static "js/js.cookie.min.js" %}"></script>
+<script src="{% static "js/axios.min.js" %}"></script>
+<script>
+const csrftoken = Cookies.get('csrftoken');
+const urlVariables = "{% url 'variable-detail' group.id %}";
+</script>
+<script src="{% static "dist/js/autocomplete.js" %} "></script>
+<script src="{% static "dist/js/variables.js" %} "></script>
+{% endblock content %}

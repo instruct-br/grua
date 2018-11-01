@@ -1,0 +1,234 @@
+.form {
+  &--body {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__content {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px 0;
+  }
+
+  &__group {
+    margin-bottom: 5px;
+
+    &--inline {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      label {
+        width: 30%;
+        min-height: 36px;
+        padding-top: 10px;
+        padding-right: 8px;
+        text-align: right;
+        display: inline-block;
+
+        span {
+          color: $default;
+        }
+      }
+    }
+  }
+
+  select,
+  textarea,
+  input[type="url"],
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    display: inline-block;
+    background-color: white;
+    border: #e6e6e6 1px solid;
+    border-bottom-color: #ccc;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+    height: 36px;
+    padding: 5px;
+    font-size: 13px;
+  }
+
+  textarea {
+    height: 100px;
+  }
+
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  &-input {
+    width: 100%;
+
+    &--text,
+    &--select {
+      display: inline-block;
+      width: 100%;
+      background-color: white;
+      border: #e6e6e6 1px solid;
+      border-bottom-color: #ccc;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+      height: 36px;
+    }
+
+    &--error {
+      border-color: $danger;
+    }
+
+    &--text {
+      padding: 5px;
+    }
+
+    &--select {
+      overflow: hidden;
+
+      select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: calc(100% + 30px);
+        padding: 4px;
+        height: 36px;
+        padding-right: 30px;
+        background: none;
+        border: 0;
+      }
+    }
+
+    &--submit {
+      height: 36px;
+      background-color: $color3;
+      border: 0;
+      border-bottom: darken($color3, 20%) 1px solid;
+      color: white;
+      text-transform: uppercase;
+      font-weight: bold;
+      padding: 10px 20px;
+      font-size: 12px;
+      display: inline-block;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
+      cursor: pointer;
+
+      &:disabled {
+        background-color: #ccc !important;
+        color: #666 !important;
+        cursor: default;
+        border-color: transparent !important;
+      }
+
+      &:hover {
+        background-color: darken($color3, 10%);
+      }
+
+      &:active {
+        background-color: darken($color3, 15%);
+      }
+
+      &-danger {
+        background-color: $danger;
+        border-bottom: darken($danger, 20%) 1px solid;
+
+        &:hover {
+          background-color: darken($danger, 10%);
+        }
+
+        &:active {
+          background-color: darken($danger, 15%);
+        }
+      }
+
+      &-default {
+        background: none;
+        box-shadow: none;
+        color: $default;
+        border: 0;
+
+        &:hover {
+          background: none;
+          color: darken($default, 15%);
+        }
+
+        &:active {
+          background: none;
+          color: darken($default, 30%);
+        }
+      }
+    }
+
+    &__error {
+      color: $danger;
+      display: inline-block;
+      padding-top: 5px;
+    }
+  }
+}
+
+.inline-remove {
+  padding: 40px 0;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+}
+
+.required {
+  color: $default;
+  display: inline-block;
+  padding-top: 10px;
+}
+
+.filter {
+  border-bottom: #eaeaea 1px solid;
+  margin-bottom: 30px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-end;
+
+  label {
+    padding-bottom: 4px;
+    display: inline-block;
+  }
+
+  .form {
+    &__group {
+      padding-right: 10px;
+      padding-bottom: 15px;
+      width: 16%;
+      min-width: 150px;
+      max-width: 300px;
+    }
+  }
+
+  .link {
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 11px;
+    display: inline-block;
+    margin-left: 15px;
+    text-decoration: none;
+
+    &--danger {
+      color: $danger;
+
+      &:hover {
+        color: darken($danger, 20%);
+      }
+    }
+  }
+}

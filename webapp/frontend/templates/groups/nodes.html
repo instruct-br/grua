@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block header_current %}
+<ul class="tabs">
+  <li class="tabs__item"><a href="{% url 'groups-classes' group.id %}" class="tabs__link tabs__link">Classes</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-nodes' group.id %}" class="tabs__link tabs__link--current">Matching Nodes</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-rules' group.id %}" class="tabs__link">Rules</a></li>
+  <li class="tabs__item"><a href="{% url 'groups-variables' group.id %}" class="tabs__link">Variables</a></li>
+</ul>
+{% endblock %}
+{% block header_left %}
+<div class="header-info__parent">
+  <strong>{{ group.master_zone }}</strong>
+  <div class="header-info__group">
+    <h2>{{ group }}</h2><a href="{% url 'groups-index' %}">Change</a>
+  </div>
+</div>
+{% endblock %}
+{% block header_right %}
+<div class="header-info__actions">
+  <a href="{% url 'groups-edit' group.id %}" class="header-info__action">Edit</a>
+  <a href="{% url 'groups-delete' group.id %}" class="header-info__action header-info__action--danger"><i class="fas fa-trash"></i> Remove</a>
+</div>
+{% endblock %}
+{% block content %}
+<div class="top-info margin-bottom">
+<p>{{ nodes | length }} node matches the rules for this node group.</p>
+</div>
+{% if nodes %}
+<table class="table">
+  <tbody>
+    <tr><th class="align-left">Matching nodes</th></tr>
+    {% for node in nodes %}
+      <tr><td class="align-left">{{ node.certname }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock content %}

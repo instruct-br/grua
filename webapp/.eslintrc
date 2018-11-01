@@ -1,0 +1,16 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "es6": true,
+    "jquery": true
+  },
+  "globals": {
+    "axios": true,
+    "window": true,
+    "document": true
+  },
+  "rules": {
+    "no-unused-vars": ["error", { "args": "none" }],
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }]
+  }
+}
