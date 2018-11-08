@@ -21,6 +21,23 @@ GRUA uses the following technologies:
 
 GRUA is very easy to install and deploy in Docker containers, through Docker Compose.
 
+Set environment variables on `docker-compose.yml` on `scheduler` and `worker` services:
+```yaml
+  ...
+  scheduler:
+    ...
+    environment:
+      - WEBAPP_USER=<username to be created>
+      - WEBAPP_PASS=<user pass to be created>
+  ... 
+  worker:
+    ...
+    environment:
+      - WEBAPP_USER=<username to be created>
+      - WEBAPP_PASS=<user pass to be created>
+  ...
+```
+
 Build the containers with:
 ```bash
 docker-compose build
@@ -31,9 +48,9 @@ Apply database migrations with:
 docker-compose run webapp python manage.py migrate
 ```
 
-Create the admin user with:
+Create an admin user with the information provided in `WEBAPP_USER` and `WEBAPP_PASS`:
 ```bash
-docker-compose run webapp python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
+docker-compose run webapp python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('<chosen username>', '<user email>', '<chosen password>')"
 ```
 
 Spin up the containers with:
@@ -91,11 +108,24 @@ Want to contribute? Awesome!
 
 GRUA has a `docker-compose.dev.yml` file specifically created to help the development process.
 It is responsible to mount volumes on Docker so the changes you made on the code are reflected on the containers.
-The abovementioned build and spin up commands can receive this dev docker-compose file as an extra argument:
 
+Build the containers with:
 ```bash
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml build
-...
+```
+
+Apply database migrations with:
+```bash
+docker-compose run webapp python manage.py migrate
+```
+
+Create a generic admin user:
+```bash
+docker-compose run webapp python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
+```
+
+Spin up the containers with:
+```bash
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 
@@ -135,6 +165,9 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml run webapp python
 
 - 0.1.0
   - Public release
+- 0.1.1
+  - Fix node-sass version on package.json
+  - Update info about environment variables `WEBAPP_USER` and `WEBAPP_PASS`
 
 
 ## Meta

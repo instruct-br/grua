@@ -9,8 +9,6 @@ services:
       - ./webapp:/code
     environment:
       - DEBUG=True
-      - WEBAPP_USER=admin
-      - WEBAPP_PASS=admin
   worker:
     build:
       context: ./workers
