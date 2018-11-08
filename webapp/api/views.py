@@ -252,7 +252,7 @@ class RuleViewSet(viewsets.ModelViewSet):
     def process_response(self, response, pk):
         if response.status_code == 200:
             rule = self.get_object()
-            master_id = rule.group.master_zone.id
+            master_id = str(rule.group.master_zone.id)
             master_address = rule.group.master_zone.address
             with faktory.connection() as client:
                 client.queue("group-nodes", args=(pk, master_id, master_address))
