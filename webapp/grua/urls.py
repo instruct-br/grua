@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from django.conf.urls import url
 from django.conf.urls.static import static
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
@@ -113,7 +112,7 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("docs/", frontend_views.docs_view, name="api-documentation"),
     re_path(
-        "docs/swagger(?P<format>\.json|\.yaml)",
+        r"docs/swagger(?P<format>\.json|\.yaml)",
         schema_view.without_ui(cache_timeout=0),
         name="schema-json",
     ),
