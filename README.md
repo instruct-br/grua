@@ -91,76 +91,6 @@ We absolutely recommend you to choose the first option, as it is much easier and
 
 Our API is documented using *[Swagger][SWAGGER]* and can be accessed on GRUA via *[/docs/ URL path][DOCS_URL]*.
 
-## Development (with Docker)
-
-Want to contribute? Awesome!
-
-### Contribution steps
-
-1. First and foremost: adhere to our *[Code of Conduct][CODE_OF_CONDUCT]*;
-2. Fork it (https://github.com/instruct-br/grua/fork);
-2. Create your feature branch (git checkout -b feature/fooBar);
-3. Commit your changes with an *[informative message][COMMIT]* (git commit);
-4. Push to the branch (git push origin feature/fooBar);
-5. Create a new Pull Request following the project's pull request template (available on Github interface).
-
-### Development environment
-
-GRUA has a `docker-compose.dev.yml` file specifically created to help the development process.
-It is responsible to mount volumes on Docker so the changes you made on the code are reflected on the containers.
-
-Build the containers with:
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml build
-```
-
-Apply database migrations with:
-```bash
-docker-compose run webapp python manage.py migrate
-```
-
-Create a generic admin user:
-```bash
-docker-compose run webapp python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
-```
-
-Spin up the containers with:
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
-```
-
-Frontend static assets are mapped with local files in the development containers.
-To generate assets locally you need to install JS dependencies: *[npm 6.4.1][NPM]* and *[node v8.12.0][NODE]*.
-These assets can be created with:
-```bash
-cd webapp/
-npm install
-npm run build
-cd ..
-```
-
-### Style guide
-
-We mostly use *[PEP8][PEP8]* as our style guide (aside of us allowing bigger line lengths).
-
-You can use *[Black][BLACK]* to format your code (while the containers are up):
-```bash
-docker exec -it grua_webapp_1 black .
-```
-
-And *[Flake8][FLAKE8]* to check it  (while the containers are up):
-```bash
-docker exec -it grua_webapp_1  pipenv run flake8 --exclude=*/migrations/* --exclude node_modules/ --ignore=E501 .
-```
-
-### Tests
-
-We also encourage developers to implement tests when contributing to a new feature or a bug fix.
-It is possible to run tests with:
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml run webapp python manage.py test
-```
-
 ### Release History
 
 - 0.1.0
@@ -195,7 +125,6 @@ Distributed under the Apache 2 license. See *[LICENSE][LICENCE]* for more inform
 [TOKEN_URL]: http://localhost:8000/admin/authtoken/token/add/
 [MASTER_ZONE_PUT_URL]: http://localhost:8000/api/master_zones/<master_zone_id>/
 [NODE_CLASSIFIER_URL]: http://localhost:8000/api/nodes/node_classifier/?certname=<node_certname>&master_id=<master_zone_id>
-[CODE_OF_CONDUCT]: https://github.com/instruct-br/grua/blob/master/CODE_OF_CONDUCT.md
 [POSTGRESQL]: https://www.postgresql.org/
 [PYTHON]: https://www.python.org/download/releases/3.0/
 [DJANGO]: https://docs.djangoproject.com/en/2.1/releases/2.0/
@@ -212,10 +141,4 @@ Distributed under the Apache 2 license. See *[LICENSE][LICENCE]* for more inform
 [GRUA_URL]: http://localhost:8000/
 [SWAGGER]: https://swagger.io/
 [DOCS_URL]: http://localhost:8000/docs/
-[NPM]: https://www.npmjs.com/
-[NODE]: https://nodejs.org/en/
-[COMMIT]: https://chris.beams.io/posts/git-commit/
-[PEP8]: https://www.python.org/dev/peps/pep-0008/
-[BLACK]: https://github.com/ambv/black
-[FLAKE8]: http://flake8.pycqa.org/en/latest/
 [LICENCE]: https://github.com/instruct-br/grua/blob/master/LICENSE
