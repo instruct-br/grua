@@ -195,7 +195,7 @@ Distributed under the Apache 2 license. See *[LICENSE][LICENCE]* for more inform
 [TOKEN_URL]: http://localhost:8000/admin/authtoken/token/add/
 [MASTER_ZONE_PUT_URL]: http://localhost:8000/api/master_zones/<master_zone_id>/
 [NODE_CLASSIFIER_URL]: http://localhost:8000/api/nodes/node_classifier/?certname=<node_certname>&master_id=<master_zone_id>
-[CODE_OF_CONDUCT]: https://github.com/instruct-br/grua/wiki/GRUA-Code-of-Conduct
+[CODE_OF_CONDUCT]: https://github.com/instruct-br/grua/blob/master/CODE_OF_CONDUCT.md
 [POSTGRESQL]: https://www.postgresql.org/
 [PYTHON]: https://www.python.org/download/releases/3.0/
 [DJANGO]: https://docs.djangoproject.com/en/2.1/releases/2.0/
