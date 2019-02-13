@@ -83,13 +83,11 @@ class ConfigurationParameterSlugSerializer(serializers.SlugRelatedField):
 
     def get_queryset(self):
         """
-        Return parameters from puppet classes from the same master
-        of the group
+        Return parameters from puppet class from the same master of the group
         """
-        classes = self.root.context.get("request", {}).data.get("classes", [])
+        puppet_class = self.root.context["puppet_class"]
         group = self.root.instance.group
-        query = {"environment": group.environment}
-        query.update({"name__in": [c.get("puppet_class") for c in classes]})
+        query = {"environment": group.environment, "name": puppet_class}
         return Parameter.objects.filter(
             puppet_class__in=PuppetClass.objects.filter(**query)
         )
@@ -124,6 +122,10 @@ class ConfigurationClassSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = ConfigurationClass
         fields = ("puppet_class", "parameters")
+
+    def to_internal_value(self, data):
+        self.root.context["puppet_class"] = data["puppet_class"]
+        return super().to_internal_value(data)
 
 
 class ConfigurationSerializer(serializers.ModelSerializer):
