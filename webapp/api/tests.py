@@ -168,6 +168,76 @@ class ConfigurationTests(BaseAPITestCase):
         log = models.UserLog.objects.get(user=self.user, request_method="PUT")
         self.assertIn(url, log.request_path)
 
+    def test_register_configuration_two_classes(self):
+        """
+        A put request to the endpoint with more than one class should update
+        all the nested structure of the configuration
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_user = models.Parameter.objects.create(
+            name="user", puppet_class=profile_tomcat
+        )
+        tomcat_java_version = models.Parameter.objects.create(
+            name="java_version", puppet_class=profile_tomcat
+        )
+        profile_mysql = models.PuppetClass.objects.create(
+            name="profile::mysql", environment=self.environment
+        )
+        # Parameter with the same name, but different class
+        mysql_user = models.Parameter.objects.create(
+            name="user", puppet_class=profile_mysql
+        )
+        mysql_version = models.Parameter.objects.create(
+            name="version", puppet_class=profile_mysql
+        )
+
+        payload = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {
+                            "value": "tomcat",
+                            "raw_value": "tomcat",
+                            "parameter": tomcat_user.name,
+                        },
+                        {
+                            "value": "1.8.0",
+                            "raw_value": "1.8.0",
+                            "parameter": tomcat_java_version.name,
+                        },
+                    ],
+                },
+                {
+                    "puppet_class": profile_mysql.name,
+                    "parameters": [
+                        {
+                            "value": "mysql",
+                            "raw_value": "mysql",
+                            "parameter": mysql_user.name,
+                        },
+                        {
+                            "value": "5.0",
+                            "raw_value": "5.0",
+                            "parameter": mysql_version.name,
+                        },
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.put(url, data=payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Fetch the config and check if it's equal to the expected
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(payload))
+        # Assert log created with current user
+        log = models.UserLog.objects.get(user=self.user, request_method="PUT")
+        self.assertIn(url, log.request_path)
+
     def test_override_configuration(self):
         """
         A put request with a completely different configuration
