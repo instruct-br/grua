@@ -8,6 +8,7 @@ from django.core.files import File
 from django.contrib.auth.models import User
 
 from core import models
+from api.serializers import NodeClassifierSerializer
 
 
 def ordered(obj):
@@ -1303,7 +1304,7 @@ class NodesTests(BaseAPITestCase):
             master_zone.id,
         )
         response = self.client.get(url)
-        expected_yaml = "classes:\n" "environment: production\n" "parameters:\n"
+        expected_yaml = "classes:\n" "environment:\n" "parameters:\n"
         self.assertEqual(response.content.decode("utf-8"), expected_yaml)
 
     def test_nonexistent_node(self):
@@ -1320,7 +1321,7 @@ class NodesTests(BaseAPITestCase):
             master_zone.id,
         )
         response = self.client.get(url)
-        expected_yaml = "classes:\n" "environment: production\n" "parameters:\n"
+        expected_yaml = "classes:\n" "environment:\n" "parameters:\n"
         self.assertEqual(response.content.decode("utf-8"), expected_yaml)
 
     def test_node_classifier_no_params(self):
@@ -1358,6 +1359,32 @@ class NodesTests(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         expected_json = {"error": "Invalid certname or master_id parameters"}
         self.assertEqual(response.json(), expected_json)
+
+    def test_node_env_with_groups(self):
+        master_zone = models.MasterZone.objects.create(
+            label="Splinter", address="http://10.10.10.10"
+        )
+        environment = models.Environment.objects.create(
+            name="my_custom_env", master_zone=master_zone
+        )
+        node = models.Node.objects.create(certname="1234.acme", master_zone=master_zone)
+        group1 = models.Group.objects.create(
+            label="grupo01",
+            description="Group number 1",
+            master_zone=master_zone,
+            environment=environment,
+        )
+        group1.matching_nodes.set([node])
+        serializer = NodeClassifierSerializer(node)
+        self.assertEqual(serializer.data['environment'], "my_custom_env")
+
+    def test_node_env_with_no_groups(self):
+        master_zone = models.MasterZone.objects.create(
+            label="Splinter", address="http://10.10.10.10"
+        )
+        node = models.Node.objects.create(certname="1234.acme", master_zone=master_zone)
+        serializer = NodeClassifierSerializer(node)
+        self.assertEqual(serializer.data['environment'], None)
 
 
 class FactTests(BaseAPITestCase):

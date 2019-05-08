@@ -13,6 +13,8 @@ class CertsClass:
         ).json()
 
     def _download_file(self, url):
+        if not url:
+            return None
         req = requests.get(url)
         downloaded_file = NamedTemporaryFile(delete=False)
         downloaded_file.write(req.content)

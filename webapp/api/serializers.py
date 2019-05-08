@@ -356,4 +356,4 @@ class NodeClassifierSerializer(serializers.ModelSerializer):
 
     def get_environment(self, node):
         groups = node.group_set.all()
-        return str(groups.first().environment) if groups else "production"
+        return str(groups.first().environment) if groups else None
