@@ -311,34 +311,23 @@ class NodeClassifierSerializer(serializers.ModelSerializer):
         }
         """
         classes = {}
-        values = (
-            node.group_set.filter(
-                configuration__class__puppet_class__name__isnull=False
-            )
-            .annotate(
-                class_name=F("configuration__class__puppet_class__name"),
-                param_name=F("configuration__class__puppet_class__parameter__name"),
-                param_value=F(
-                    "configuration__class__puppet_class__parameter__classification__raw_value"
-                ),  # noqa
-            )
-            .values("class_name", "param_name", "param_value")
-        )
+        values = node.group_set.annotate(
+            class_name=F("configuration__class__puppet_class__name"),
+            param_name=F("configuration__class__parameter__parameter__name"),
+            param_value=F("configuration__class__parameter__raw_value"),
+            param_pk=F("configuration__class__parameter__pk"),
+        ).values("class_name", "param_name", "param_value", "param_pk")
 
         for value in values:
-            if value["class_name"] not in classes:
+            if value["class_name"] and value["class_name"] not in classes:
                 classes[value["class_name"]] = None
             if value["param_name"]:
                 if value["param_value"] is not None:
                     if classes[value["class_name"]] is None:
                         classes[value["class_name"]] = {}
-                    param_value = (
-                        ConfigurationParameter.objects.filter(
-                            parameter__name=value["param_name"]
-                        )
-                        .first()
-                        .get_value()
-                    )
+                    param_value = ConfigurationParameter.objects.get(
+                        pk=value["param_pk"]
+                    ).get_value()
                     classes[value["class_name"]][value["param_name"]] = param_value
 
         # Returns None for nodes withou classification settings
