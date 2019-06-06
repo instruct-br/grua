@@ -225,7 +225,7 @@ class ConfigurationTests(BaseAPITestCase):
                             "parameter": mysql_version.name,
                         },
                     ],
-                }
+                },
             ]
         }
         url = "/api/configuration/" + str(self.group.id) + "/"
@@ -1289,6 +1289,100 @@ class NodesTests(BaseAPITestCase):
         )
         self.assertEqual(response.content.decode("utf-8"), expected_yaml)
 
+    def test_node_classifier_multiple_groups(self):
+        """
+        A get request should return the ENC yaml file
+        with values filled for the node group
+        """
+        master_zone = models.MasterZone.objects.create(
+            label="Splinter", address="http://10.10.10.10"
+        )
+        node = models.Node.objects.create(certname="1234.acme", master_zone=master_zone)
+        environment = models.Environment.objects.create(
+            name="production", master_zone=master_zone
+        )
+        group1 = models.Group.objects.create(
+            label="grupo01",
+            description="Group number 1",
+            master_zone=master_zone,
+            environment=environment,
+        )
+        group2 = models.Group.objects.create(
+            label="grupo02",
+            description="Group number 2",
+            master_zone=master_zone,
+            environment=environment,
+        )
+        group3 = models.Group.objects.create(
+            label="grupo03",
+            description="Group number 3",
+            master_zone=master_zone,
+            environment=environment,
+        )
+        group4 = models.Group.objects.create(
+            label="grupo04",
+            description="Group number 4",
+            master_zone=master_zone,
+            environment=environment,
+        )
+        group4.matching_nodes.set([node])
+        # Add variables to groups
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=environment
+        )
+        tomcat_user = models.Parameter.objects.create(
+            name="user", puppet_class=profile_tomcat
+        )
+
+        tomcat_config1 = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=group1.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config1,
+            parameter=tomcat_user,
+            raw_value="tomcat1",
+        )
+
+        tomcat_config2 = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=group2.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config2,
+            parameter=tomcat_user,
+            raw_value="tomcat1",
+        )
+
+        tomcat_config3 = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=group3.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config3,
+            parameter=tomcat_user,
+            raw_value="tomcat1",
+        )
+
+        tomcat_config4 = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=group4.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config4,
+            parameter=tomcat_user,
+            raw_value="tomcat2",
+        )
+        url = "/api/nodes/node_classifier/?certname=%s&master_id=%s" % (
+            node.certname,
+            master_zone.id,
+        )
+        response = self.client.get(url)
+        expected_yaml = (
+            "classes:\n"
+            "  profile::tomcat:\n"
+            "    user: tomcat2\n"
+            "environment: production\n"
+            "parameters:\n"
+        )
+        self.assertEqual(response.content.decode("utf-8"), expected_yaml)
+
     def test_empty_node(self):
         """
         A request of classification data to a node without classification
@@ -1376,7 +1470,7 @@ class NodesTests(BaseAPITestCase):
         )
         group1.matching_nodes.set([node])
         serializer = NodeClassifierSerializer(node)
-        self.assertEqual(serializer.data['environment'], "my_custom_env")
+        self.assertEqual(serializer.data["environment"], "my_custom_env")
 
     def test_node_env_with_no_groups(self):
         master_zone = models.MasterZone.objects.create(
@@ -1384,7 +1478,7 @@ class NodesTests(BaseAPITestCase):
         )
         node = models.Node.objects.create(certname="1234.acme", master_zone=master_zone)
         serializer = NodeClassifierSerializer(node)
-        self.assertEqual(serializer.data['environment'], None)
+        self.assertEqual(serializer.data["environment"], None)
 
 
 class FactTests(BaseAPITestCase):
