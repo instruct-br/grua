@@ -7,6 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_yaml.renderers import YAMLRenderer
 from rest_framework_yaml.encoders import SafeDumper
+from django_filters import rest_framework as filters
+from rest_framework.filters import SearchFilter
 from core.models import (
     MasterZone,
     Environment,
@@ -48,9 +50,13 @@ class EnvironmentViewSet(viewsets.ModelViewSet):
 
 
 class MasterZoneViewSet(viewsets.ModelViewSet):
+    __basic_fields = ["label", "address"]
     queryset = MasterZone.objects.all()
     serializer_class = MasterZoneSerializer
     pagination_class = None
+    filter_backends = (filters.DjangoFilterBackend, SearchFilter)
+    filter_fields = __basic_fields
+    search_fields = __basic_fields
 
     @action(methods=["post"], detail=False)
     def refresh_info(self, request):
@@ -107,7 +113,7 @@ class FactViewSet(viewsets.ModelViewSet):
     queryset = Fact.objects.all()
     serializer_class = FactSerializer
     pagination_class = None
-    filter_fields = ("master_zone",)
+    filter_fields = ["name", "master_zone"]
 
     @action(methods=["post"], detail=False)
     def sync(self, request):
@@ -126,7 +132,7 @@ class NodeViewSet(viewsets.ModelViewSet):
     queryset = Node.objects.all()
     serializer_class = NodeSerializer
     pagination_class = None
-    filter_fields = ("master_zone",)
+    filter_fields = ["master_zone", "certname"]
 
     @action(methods=["post"], detail=False)
     def sync(self, request):
@@ -174,7 +180,7 @@ class PuppetClassViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = PuppetClass.objects.all()
     serializer_class = PuppetClassSerializer
     pagination_class = None
-    filter_fields = ("environment",)
+    filter_fields = ["name", "environment"]
 
     @action(methods=["post"], detail=False)
     def sync(self, request):
@@ -229,7 +235,7 @@ class ParameterViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Parameter.objects.all()
     serializer_class = ParameterSerializer
     pagination_class = None
-    filter_fields = ("puppet_class",)
+    filter_fields = ["puppet_class", "value_type", "value_default", "name"]
 
     @list_route(methods=["get"], url_path="types")
     def types(self, request):
@@ -275,6 +281,17 @@ class VariableViewSet(viewsets.ModelViewSet):
 
 
 class GroupViewSet(viewsets.ModelViewSet):
+    __basic_fields = [
+              "label", "matching_nodes", "description",
+              "master_zone", "environment", "tags__name"
+    ]
+    __search_fields = [
+              "label", "description", "tags__name", "master_zone__label"
+              "environment__name",
+    ]
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     pagination_class = None
+    filter_backends = (filters.DjangoFilterBackend, SearchFilter)
+    filter_fields = __basic_fields
+    search_fields = __search_fields
