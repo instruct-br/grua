@@ -4,3 +4,5 @@ node_modules
 webapp/uploads/*
 !webapp/uploads/.gitkeep
 webapp/frontend/static/dist
+
+.vscode

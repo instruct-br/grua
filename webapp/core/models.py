@@ -1,13 +1,16 @@
 import ast
-import uuid
 import re
+import uuid
+
+from distutils.util import strtobool
+
+from django.contrib.auth.models import User
+from django.contrib.postgres.fields import HStoreField
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.urls import reverse
-from django.contrib.postgres.fields import HStoreField
-from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
@@ -323,10 +326,7 @@ class ConfigurationParameter(models.Model):
         elif value_type in Parameter.FLOAT:
             self.float_value = float(self.raw_value)
         elif value_type in Parameter.BOOLEAN:
-            if self.raw_value in ["TRUE", "True", "true"]:
-                self.boolean_value = True
-            else:
-                self.boolean_value = False
+            self.boolean_value = bool(strtobool(self.raw_value))
 
         super().save(*args, **kwargs)
 
