@@ -5,18 +5,19 @@ name = "pypi"
 
 [packages]
 Django = "==2.0.5"
-psycopg2 = "*"
-djangorestframework = "*"
+psycopg2 = "==2.7.5"
+djangorestframework = "==3.9.0"
 django-filter = "*"
 faktory = "*"
 djangorestframework-yaml = "*"
 django-taggit = "*"
 django-guardian = "*"
 raven = "*"
-drf-yasg = {extras = ["validation"], version = "*"}
+drf-yasg = {extras = ["validation"],version = "*"}
 whitenoise = "==4.1"
 
 [dev-packages]
 coverage = "*"
 black = "==18.5b0"
 "flake8" = "*"
+model-bakery = "*"
