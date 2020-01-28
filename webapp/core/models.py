@@ -295,7 +295,7 @@ class ConfigurationClass(models.Model):
 
 class ConfigurationParameter(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    raw_value = models.TextField()
+    raw_value = models.TextField(blank=True)
     string_value = models.CharField(max_length=255, null=True, blank=True)
     integer_value = models.IntegerField(null=True, blank=True)
     float_value = models.FloatField(null=True, blank=True)
