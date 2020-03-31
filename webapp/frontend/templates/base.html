@@ -44,7 +44,7 @@
           <a href="{% url 'master-zones-new' %}" class="nav__plus" title="Create new master zone">+</a>
         </div>
         <ul class="nav-list">
-          {% for master_zone in master_zones %}
+          {% for master_zone in master_zone_list %}
             <li class="nav-list__item"><a class="nav-list__link" href="{% url 'master-zones-index' %}?master_zone={{ master_zone.id }}">{{ master_zone.label }}</a></li>
           {% endfor %}
         </ul>

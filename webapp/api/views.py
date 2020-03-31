@@ -2,7 +2,6 @@ import faktory
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from rest_framework import status, viewsets
-from rest_framework.decorators import list_route
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_yaml.renderers import YAMLRenderer
@@ -231,7 +230,7 @@ class ParameterViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
     filter_fields = ("puppet_class",)
 
-    @list_route(methods=["get"], url_path="types")
+    @action(methods=["get"], url_path="types", detail=False)
     def types(self, request):
         types = dict((t, False) for _, t in Parameter.CORE_DATA_TYPES)
         types.update(dict((t, True) for _, t in Parameter.ABSTRACT_DATA_TYPES))
