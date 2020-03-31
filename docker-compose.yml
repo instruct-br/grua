@@ -4,6 +4,10 @@ services:
   db:
     image: postgres
     hostname: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=postgres
   work_server:
     image: contribsys/faktory
     ports:
@@ -22,6 +26,7 @@ services:
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
       - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     links:
       - db
 
