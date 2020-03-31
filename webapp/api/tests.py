@@ -617,6 +617,164 @@ class ConfigurationTests(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(ordered(response.json()), ordered(expected_json))
 
+    def test_optional_string_type_parameter(self):
+        """
+        Test if the parameter value is being identified as string correctly
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_str = models.Parameter.objects.create(
+            name="optional_str",
+            value_type="Optional",
+            values="String",
+            puppet_class=profile_tomcat,
+        )
+        tomcat_config = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=self.group.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config,
+            parameter=tomcat_str,
+            raw_value="loremipsum",
+        )
+        expected_json = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {
+                            "value": "loremipsum",
+                            "raw_value": "loremipsum",
+                            "parameter": tomcat_str.name,
+                        }
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(expected_json))
+
+    def test_optional_integer_type_parameter(self):
+        """
+        Test if the parameter value is being converted to int correctly
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_number = models.Parameter.objects.create(
+            name="optional_number",
+            value_type="Optional",
+            values="Integer",
+            puppet_class=profile_tomcat,
+        )
+        tomcat_config = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=self.group.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config, parameter=tomcat_number, raw_value="1"
+        )
+        expected_json = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {"value": 1, "raw_value": "1", "parameter": tomcat_number.name}
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(expected_json))
+
+    def test_optional_float_type_parameter(self):
+        """
+        Test if the parameter value is being converted to float correctly
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_number = models.Parameter.objects.create(
+            name="optional_float",
+            value_type="Optional",
+            values="Float",
+            puppet_class=profile_tomcat,
+        )
+        tomcat_config = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=self.group.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config, parameter=tomcat_number, raw_value="1.1"
+        )
+        expected_json = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {
+                            "value": 1.1,
+                            "raw_value": "1.1",
+                            "parameter": tomcat_number.name,
+                        }
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(expected_json))
+
+    def test_optional_boolean_type_parameter(self):
+        """
+        Test if the parameter value is being converted to boolean correctly
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_bool = models.Parameter.objects.create(
+            name="optional_bool",
+            value_type="Optional",
+            values="Boolean",
+            puppet_class=profile_tomcat,
+        )
+        tomcat_config = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=self.group.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config, parameter=tomcat_bool, raw_value="True"
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config, parameter=tomcat_bool, raw_value="False"
+        )
+        expected_json = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {
+                            "value": True,
+                            "raw_value": "True",
+                            "parameter": tomcat_bool.name,
+                        },
+                        {
+                            "value": False,
+                            "raw_value": "False",
+                            "parameter": tomcat_bool.name,
+                        },
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(expected_json))
+
     def test_unusual_type_parameter(self):
         """
         Test if the parameter value is being mantained as text if the type is not identified

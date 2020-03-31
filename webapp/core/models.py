@@ -295,6 +295,7 @@ class ConfigurationClass(models.Model):
 
 class ConfigurationParameter(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    raw_value = models.TextField(blank=True)
     string_value = models.TextField(null=True, blank=True)
     integer_value = models.IntegerField(null=True, blank=True)
     float_value = models.FloatField(null=True, blank=True)
@@ -316,6 +317,9 @@ class ConfigurationParameter(models.Model):
         return self.parameter.name
 
     def save(self, *args, **kwargs):
+        if self.parameter.value_type == Parameter.OPTIONAL:
+            value_type = self.parameter.values
+        else:
         value_type = self.parameter.value_type
 
         if value_type == Parameter.STRING:
@@ -330,13 +334,21 @@ class ConfigurationParameter(models.Model):
         super().save(*args, **kwargs)
 
     def get_value(self):
+        optional_values = {
+            Parameter.BOOLEAN: self.boolean_value,
+            Parameter.FLOAT: self.float_value,
+            Parameter.INTEGER: self.integer_value,
+            Parameter.STRING: self.string_value,
+        }
+
         obj_dict = model_to_dict(self)
         value = obj_dict.get(self.parameter.value_type.lower() + "_value", None)
         if value is None:
             if self.parameter.value_type == Parameter.HASH:
                 value = ast.literal_eval(self.raw_value)
             elif self.parameter.value_type == Parameter.ARRAY:
-                value = ast.literal_eval(self.raw_value)
+            elif self.parameter.value_type == Parameter.OPTIONAL:
+                value = optional_values.get(self.parameter.values, self.raw_value)
             else:
                 value = self.raw_value
         return value

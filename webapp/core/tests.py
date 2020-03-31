@@ -1,8 +1,8 @@
+from django.db.models import TextField
 from django.test import TestCase
 
-from model_bakery import baker
-
 from core import models
+from model_bakery import baker
 
 
 class GroupTests(TestCase):
@@ -42,6 +42,13 @@ class ConfigurationParameterTests(TestCase):
     """
     Tests for ConfigurationParameter Model.
     """
+
+    def test_string_value(self):
+        """
+        string_value should be a text field.
+        """
+        field = models.ConfigurationParameter._meta.get_field("string_value")
+        self.assertIsInstance(field, TextField)
 
     def test_configurationparameter_save_parameter_string(self):
         """
@@ -148,3 +155,84 @@ class ConfigurationParameterTests(TestCase):
         )
 
         self.assertEqual(True, configuration_parameter_boolean_yes.boolean_value)
+    
+    def test_optional_string_param(self):
+        """
+        Should save raw_value in the string_value field
+        if Parameter's value_type field is a optional and
+        values field is string.
+        """
+        param_optional_string = baker.make(
+            models.Parameter,
+            value_type=models.Parameter.OPTIONAL,
+            values=models.Parameter.STRING,
+        )
+
+        configuration_param_optional_string = baker.make(
+            models.ConfigurationParameter,
+            raw_value="test",
+            parameter=param_optional_string,
+        )
+
+        self.assertEqual("test", configuration_param_optional_string.string_value)
+
+    def test_optional_integer_param(self):
+        """
+        Should save raw_value in the integer_value field
+        if Parameter's value_type field is a optional and
+        values field is integer.
+        """
+        param_optional_integer = baker.make(
+            models.Parameter,
+            value_type=models.Parameter.OPTIONAL,
+            values=models.Parameter.INTEGER,
+        )
+
+        configuration_param_optional_integer = baker.make(
+            models.ConfigurationParameter,
+            raw_value="123",
+            parameter=param_optional_integer,
+        )
+
+        self.assertEqual(123, configuration_param_optional_integer.integer_value)
+
+    def test_optional_boolean_param(self):
+        """
+        Should save raw_value in the boolean_value field
+        if Parameter's value_type field is a optional and
+        values field is boolean.
+        """
+        param_optional_boolean = baker.make(
+            models.Parameter,
+            value_type=models.Parameter.OPTIONAL,
+            values=models.Parameter.BOOLEAN,
+        )
+
+        configuration_param_optional_boolean = baker.make(
+            models.ConfigurationParameter,
+            raw_value="True",
+            parameter=param_optional_boolean,
+        )
+
+        self.assertEqual(True, configuration_param_optional_boolean.boolean_value)
+
+    def test_optional_float_param(self):
+        """
+        Should save raw_value in the float_value field
+        if Parameter's value_type field is a optional and
+        values field is float.
+        """
+        param_optional_float = baker.make(
+            models.Parameter,
+            value_type=models.Parameter.OPTIONAL,
+            values=models.Parameter.FLOAT,
+        )
+
+        configuration_param_optional_float = baker.make(
+            models.ConfigurationParameter,
+            raw_value="123.05",
+            parameter=param_optional_float,
+        )
+
+        self.assertEqual(123.05, configuration_param_optional_float.float_value)
+
