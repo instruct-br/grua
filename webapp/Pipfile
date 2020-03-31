@@ -15,10 +15,10 @@ django-guardian = "~=2.1.0"
 raven = "~=6.10.0"
 drf-yasg = {extras = ["validation"],version = "*"}
 whitenoise = "~=4.1.0"
+django-fernet-fields = "~=0.6.0"
 
 [dev-packages]
 coverage = "*"
 black = "==18.5b0"
-"flake8" = "*"
 model-bakery = "*"
 flake8 = "*"

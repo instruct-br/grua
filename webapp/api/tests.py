@@ -471,6 +471,32 @@ class ConfigurationTests(BaseAPITestCase):
         response = self.client.put(url, data=payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_raw_value_blank(self):
+        """
+        Test if raw_value parameter allow blank values
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        param = models.Parameter.objects.create(
+            name="param", value_type="String", puppet_class=profile_tomcat
+        )
+
+        payload = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {"parameter": param.name, "value": "", "raw_value": ""}
+                    ],
+                }
+            ]
+        }
+
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.put(url, data=payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_string_type_parameter(self):
         """
         Test if the parameter value is being identified as string correctly
@@ -766,6 +792,183 @@ class ConfigurationTests(BaseAPITestCase):
                             "raw_value": "False",
                             "parameter": tomcat_bool.name,
                         },
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(expected_json))
+
+    def test_sensitive_string_type_parameter(self):
+        """
+        Test if the parameter value is being identified as sensitive string correctly
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_str = models.Parameter.objects.create(
+            name="sensitive_str", value_type="String", puppet_class=profile_tomcat
+        )
+        tomcat_config = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=self.group.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config,
+            parameter=tomcat_str,
+            raw_value="loremipsum",
+        )
+        expected_json = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {
+                            "value": "loremipsum",
+                            "raw_value": "loremipsum",
+                            "parameter": tomcat_str.name,
+                        }
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(expected_json))
+
+    def test_sensitive_int_type_parameter(self):
+        """
+        Test if the parameter value is being identified as sensitive integer correctly
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_str = models.Parameter.objects.create(
+            name="sensitive_int", value_type="Integer", puppet_class=profile_tomcat
+        )
+        tomcat_config = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=self.group.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config, parameter=tomcat_str, raw_value=123
+        )
+        expected_json = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {"value": 123, "raw_value": "123", "parameter": tomcat_str.name}
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(expected_json))
+
+    def test_sensitive_float_type_parameter(self):
+        """
+        Test if the parameter value is being identified as sensitive float correctly
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_str = models.Parameter.objects.create(
+            name="sensitive_float", value_type="Float", puppet_class=profile_tomcat
+        )
+        tomcat_config = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=self.group.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config, parameter=tomcat_str, raw_value=123.4
+        )
+        expected_json = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {
+                            "value": 123.4,
+                            "raw_value": "123.4",
+                            "parameter": tomcat_str.name,
+                        }
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(expected_json))
+
+    def test_optional_sensitive_string_type_parameter(self):
+        """
+        Test if the parameter value is being identified as sensitive string correctly
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_str = models.Parameter.objects.create(
+            name="sensitive_str",
+            value_type="Optional",
+            values="String",
+            puppet_class=profile_tomcat,
+        )
+        tomcat_config = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=self.group.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config,
+            parameter=tomcat_str,
+            raw_value="loremipsum",
+        )
+        expected_json = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {
+                            "value": "loremipsum",
+                            "raw_value": "loremipsum",
+                            "parameter": tomcat_str.name,
+                        }
+                    ],
+                }
+            ]
+        }
+        url = "/api/configuration/" + str(self.group.id) + "/"
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ordered(response.json()), ordered(expected_json))
+
+    def test_optional_sensitive_int_type_parameter(self):
+        """
+        Test if the parameter value is being identified as sensitive integer correctly
+        """
+        profile_tomcat = models.PuppetClass.objects.create(
+            name="profile::tomcat", environment=self.environment
+        )
+        tomcat_str = models.Parameter.objects.create(
+            name="sensitive_int",
+            value_type="Optional",
+            values="Integer",
+            puppet_class=profile_tomcat,
+        )
+        tomcat_config = models.ConfigurationClass.objects.create(
+            puppet_class=profile_tomcat, configuration=self.group.configuration
+        )
+        models.ConfigurationParameter.objects.create(
+            configuration_class=tomcat_config, parameter=tomcat_str, raw_value=123
+        )
+        expected_json = {
+            "classes": [
+                {
+                    "puppet_class": profile_tomcat.name,
+                    "parameters": [
+                        {"value": 123, "raw_value": "123", "parameter": tomcat_str.name}
                     ],
                 }
             ]

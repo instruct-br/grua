@@ -1,7 +1,6 @@
 import ast
 import re
 import uuid
-
 from distutils.util import strtobool
 
 from django.contrib.auth.models import User
@@ -12,6 +11,8 @@ from django.dispatch import receiver
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+
+from fernet_fields import EncryptedTextField
 from taggit.managers import TaggableManager
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
 
@@ -300,6 +301,7 @@ class ConfigurationParameter(models.Model):
     integer_value = models.IntegerField(null=True, blank=True)
     float_value = models.FloatField(null=True, blank=True)
     boolean_value = models.NullBooleanField(null=True, blank=True)
+    sensitive_value = EncryptedTextField(null=True, blank=True)
     configuration_class = models.ForeignKey(
         ConfigurationClass,
         on_delete=models.CASCADE,
@@ -316,20 +318,41 @@ class ConfigurationParameter(models.Model):
     def __str__(self):
         return self.parameter.name
 
+    def cast(self, value_type, value):
+        if value_type == Parameter.STRING:
+            converted = str(value)
+        elif value_type == Parameter.INTEGER:
+            converted = int(value)
+        elif value_type == Parameter.FLOAT:
+            converted = float(value)
+        elif value_type == Parameter.BOOLEAN:
+            converted = bool(strtobool(value))
+        elif value_type == Parameter.HASH:
+            converted = ast.literal_eval(value)
+        elif value_type == Parameter.ARRAY:
+            converted = ast.literal_eval(value)
+        else:
+            converted = value
+
+        return converted
+
     def save(self, *args, **kwargs):
         if self.parameter.value_type == Parameter.OPTIONAL:
             value_type = self.parameter.values
         else:
-        value_type = self.parameter.value_type
+            value_type = self.parameter.value_type
 
-        if value_type == Parameter.STRING:
-            self.string_value = self.raw_value
+        if re.search("^sensitive_.*", self.parameter.name):
+            self.sensitive_value = self.raw_value
+            self.raw_value = "[Sensitive]"
+        elif value_type == Parameter.STRING:
+            self.string_value = self.cast(value_type, self.raw_value)
         elif value_type == Parameter.INTEGER:
-            self.integer_value = int(self.raw_value)
-        elif value_type in Parameter.FLOAT:
-            self.float_value = float(self.raw_value)
-        elif value_type in Parameter.BOOLEAN:
-            self.boolean_value = bool(strtobool(self.raw_value))
+            self.integer_value = self.cast(value_type, self.raw_value)
+        elif value_type == Parameter.FLOAT:
+            self.float_value = self.cast(value_type, self.raw_value)
+        elif value_type == Parameter.BOOLEAN:
+            self.boolean_value = self.cast(value_type, self.raw_value)
 
         super().save(*args, **kwargs)
 
@@ -343,15 +366,34 @@ class ConfigurationParameter(models.Model):
 
         obj_dict = model_to_dict(self)
         value = obj_dict.get(self.parameter.value_type.lower() + "_value", None)
+
         if value is None:
-            if self.parameter.value_type == Parameter.HASH:
-                value = ast.literal_eval(self.raw_value)
+            if re.search("^sensitive_.*", self.parameter.name):
+                if self.parameter.values == "":
+                    param_type = self.parameter.value_type
+                else:
+                    param_type = self.parameter.values
+
+                value = self.cast(param_type, obj_dict.get("sensitive_value", None))
+
+            elif self.parameter.value_type == Parameter.HASH:
+                value = self.cast(self.parameter.value_type, self.raw_value)
             elif self.parameter.value_type == Parameter.ARRAY:
+                value = self.cast(self.parameter.value_type, self.raw_value)
             elif self.parameter.value_type == Parameter.OPTIONAL:
                 value = optional_values.get(self.parameter.values, self.raw_value)
             else:
                 value = self.raw_value
+
         return value
+
+    def get_raw_value(self):
+        if re.search("^sensitive_.*", self.parameter.name):
+            raw_value = self.sensitive_value
+        else:
+            raw_value = self.raw_value
+
+        return raw_value
 
 
 class Variable(models.Model):

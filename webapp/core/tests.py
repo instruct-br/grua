@@ -155,7 +155,7 @@ class ConfigurationParameterTests(TestCase):
         )
 
         self.assertEqual(True, configuration_parameter_boolean_yes.boolean_value)
-    
+
     def test_optional_string_param(self):
         """
         Should save raw_value in the string_value field
@@ -236,3 +236,205 @@ class ConfigurationParameterTests(TestCase):
 
         self.assertEqual(123.05, configuration_param_optional_float.float_value)
 
+    def test_sensitive_string_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        value_type field is string.
+        """
+        param_sensitive_string = baker.make(
+            models.Parameter,
+            name="sensitive_string",
+            value_type=models.Parameter.STRING,
+        )
+
+        configuration_param_sensitive_string = baker.make(
+            models.ConfigurationParameter,
+            raw_value="test",
+            parameter=param_sensitive_string,
+        )
+
+        self.assertEqual("test", configuration_param_sensitive_string.get_value())
+
+    def test_sensitive_string_optional_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        values field is string.
+        """
+        param_sensitive_string = baker.make(
+            models.Parameter,
+            name="sensitive_string",
+            value_type=models.Parameter.OPTIONAL,
+            values=models.Parameter.STRING,
+        )
+
+        configuration_param_sensitive_string = baker.make(
+            models.ConfigurationParameter,
+            raw_value="test",
+            parameter=param_sensitive_string,
+        )
+
+        self.assertEqual("test", configuration_param_sensitive_string.get_value())
+
+    def test_sensitive_int_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        value_type field is integer.
+        """
+        param_sensitive_int = baker.make(
+            models.Parameter, name="sensitive_int", value_type=models.Parameter.INTEGER
+        )
+
+        configuration_param_sensitive_int = baker.make(
+            models.ConfigurationParameter, raw_value=123, parameter=param_sensitive_int
+        )
+
+        self.assertEqual(123, configuration_param_sensitive_int.get_value())
+
+    def test_sensitive_int_optional_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        values field is integer.
+        """
+        param_sensitive_int = baker.make(
+            models.Parameter,
+            name="sensitive_int",
+            value_type=models.Parameter.OPTIONAL,
+            values=models.Parameter.INTEGER,
+        )
+
+        configuration_param_sensitive_int = baker.make(
+            models.ConfigurationParameter, raw_value=123, parameter=param_sensitive_int
+        )
+
+        self.assertEqual(123, configuration_param_sensitive_int.get_value())
+
+    def test_sensitive_float_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        value_type field is float.
+        """
+        param_sensitive_float = baker.make(
+            models.Parameter, name="sensitive_float", value_type=models.Parameter.FLOAT
+        )
+
+        configuration_param_sensitive_float = baker.make(
+            models.ConfigurationParameter,
+            raw_value=123.4,
+            parameter=param_sensitive_float,
+        )
+
+        self.assertEqual(123.4, configuration_param_sensitive_float.get_value())
+
+    def test_sensitive_float_optional_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        values field is float.
+        """
+        param_sensitive_float = baker.make(
+            models.Parameter,
+            name="sensitive_float",
+            value_type=models.Parameter.OPTIONAL,
+            values=models.Parameter.FLOAT,
+        )
+
+        configuration_param_sensitive_float = baker.make(
+            models.ConfigurationParameter,
+            raw_value=123.4,
+            parameter=param_sensitive_float,
+        )
+
+        self.assertEqual(123.4, configuration_param_sensitive_float.get_value())
+
+    def test_sensitive_array_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        value_type field is array.
+        """
+        param_sensitive_array = baker.make(
+            models.Parameter, name="sensitive_array", value_type=models.Parameter.ARRAY
+        )
+
+        configuration_param_sensitive_array = baker.make(
+            models.ConfigurationParameter,
+            raw_value='["test1", "test2"]',
+            parameter=param_sensitive_array,
+        )
+
+        self.assertListEqual(
+            ["test1", "test2"], configuration_param_sensitive_array.get_value()
+        )
+
+    def test_sensitive_array_optional_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        values field is array.
+        """
+        param_sensitive_array = baker.make(
+            models.Parameter,
+            name="sensitive_array",
+            value_type=models.Parameter.OPTIONAL,
+            values=models.Parameter.ARRAY,
+        )
+
+        configuration_param_sensitive_array = baker.make(
+            models.ConfigurationParameter,
+            raw_value='["test1", "test2"]',
+            parameter=param_sensitive_array,
+        )
+
+        self.assertListEqual(
+            ["test1", "test2"], configuration_param_sensitive_array.get_value()
+        )
+
+    def test_sensitive_hash_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        value_type field is hash.
+        """
+        param_sensitive_hash = baker.make(
+            models.Parameter, name="sensitive_hash", value_type=models.Parameter.HASH
+        )
+
+        configuration_param_sensitive_hash = baker.make(
+            models.ConfigurationParameter,
+            raw_value='{"test1": "OK", "test2": "OK"}',
+            parameter=param_sensitive_hash,
+        )
+
+        self.assertDictEqual(
+            {"test1": "OK", "test2": "OK"},
+            configuration_param_sensitive_hash.get_value(),
+        )
+
+    def test_sensitive_hash_optional_param(self):
+        """
+        Should save raw_value in the sensitive_value field
+        if Parameter's name has sensitive_ prefix and
+        values field is hash.
+        """
+        param_sensitive_hash = baker.make(
+            models.Parameter,
+            name="sensitive_hash",
+            value_type=models.Parameter.OPTIONAL,
+            values=models.Parameter.HASH,
+        )
+
+        configuration_param_sensitive_hash = baker.make(
+            models.ConfigurationParameter,
+            raw_value='{"test1": "OK", "test2": "OK"}',
+            parameter=param_sensitive_hash,
+        )
+
+        self.assertDictEqual(
+            {"test1": "OK", "test2": "OK"},
+            configuration_param_sensitive_hash.get_value(),
+        )
