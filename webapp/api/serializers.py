@@ -96,6 +96,7 @@ class ConfigurationParameterSlugSerializer(serializers.SlugRelatedField):
 class ConfigurationParameterSerializer(serializers.ModelSerializer):
     parameter = ConfigurationParameterSlugSerializer(slug_field="name")
     value = serializers.SerializerMethodField()
+    raw_value = serializers.CharField(source="get_raw_value", allow_blank=True)
 
     class Meta(object):
         model = ConfigurationParameter
@@ -149,7 +150,7 @@ class ConfigurationSerializer(serializers.ModelSerializer):
                 ConfigurationParameter.objects.update_or_create(
                     configuration_class=config_class_obj,
                     parameter=param["parameter"],
-                    defaults={"raw_value": param["raw_value"]},
+                    defaults={"raw_value": param["get_raw_value"]},
                 )
             # Remove ConfigurationParameter that are not used anymore
             ConfigurationParameter.objects.filter(

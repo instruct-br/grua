@@ -115,8 +115,9 @@ Distributed under the Apache 2 license. See *[LICENSE][LICENCE]* for more inform
 - Fabio Iassia (fabio at instruct dot com dot br);
 - Joao Nascimento (joao dot nascimento at instruct dot com dot br);
 - João Sizílio (joao dot sizílio at instruct dot com dot br);
-- Luana Lima (luana dot lima at instruct dot com dot br); 
-- Thiago Pena (thiagopena at instruct dot com dot br).
+- Luana Lima (luana dot lima at instruct dot com dot br);
+- Thiago Pena (thiagopena at instruct dot com dot br);
+- Jeferson Costa (jeferson dot costa at instruct dot com dot br);
 
 [ENC]: https://puppet.com/docs/puppet/5.5/nodes_external.html
 [WIKI]: https://github.com/instruct-br/grua/wiki

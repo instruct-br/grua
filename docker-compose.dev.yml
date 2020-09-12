@@ -8,7 +8,10 @@ services:
     volumes:
       - ./webapp:/code
     environment:
+      - ALLOWED_HOSTS=*
       - DEBUG=True
+      - WEBAPP_USER=admin
+      - WEBAPP_PASS=admin
   worker:
     build:
       context: ./workers
