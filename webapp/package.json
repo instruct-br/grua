@@ -2,14 +2,14 @@
   "name": "grua",
   "version": "1.0.0",
   "scripts": {
-    "scss": "node-sass frontend/assets/scss -o frontend/static/dist/css --output-style compressed",
+    "scss": "sass frontend/assets/scss:frontend/static/dist/css",
     "autoprefixer": "postcss --config postcss.config.js -r frontend/static/dist/css",
     "babel": "babel frontend/assets/js -d frontend/static/dist/js",
     "watch:js": "babel --watch frontend/assets/js -d frontend/static/dist/js",
-    "watch:scss": "node-sass --watch frontend/assets/scss -o frontend/static/dist/css",
+    "watch:scss": "sass frontend/assets/scss:frontend/static/dist/css",
     "lint:js": "eslint frontend/assets/js/",
     "lint:scss": "stylelint frontend/assets/scss/ --syntax scss",
-    "build:css": "npm run scss && npm run autoprefixer",
+    "build:css": "npm run scss",
     "build:img": "cp -r frontend/assets/img frontend/static/dist/",
     "build:js": "npm run lint:js && npm run babel",
     "build:dev": "npm run build:css && npm run build:js",
@@ -26,8 +26,8 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
-    "node-sass": "^4.10.0",
     "postcss-cli": "^6.0.0",
+    "sass": "^1.32.8",
     "stylelint": "^9.6.0",
     "stylelint-config-standard": "^18.2.0"
   }
