@@ -1,0 +1,25 @@
+sudo: required
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.22.0
+
+services:
+  - docker
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+script:
+  - docker-compose -f docker-compose.yml -f docker-compose.ci.yml build
+  - docker-compose -f docker-compose.yml  -f docker-compose.ci.yml  up -d db
+  - sleep 3
+  - docker-compose -f docker-compose.yml -f docker-compose.ci.yml run webapp python manage.py migrate
+  - docker-compose -f docker-compose.yml -f docker-compose.ci.yml run webapp python manage.py test
+  - docker-compose -f docker-compose.yml -f docker-compose.ci.yml run worker python tests.py
+  - docker-compose -f docker-compose.yml -f docker-compose.ci.yml run webapp /usr/local/bin/black --check .
+  - docker-compose -f docker-compose.yml -f docker-compose.ci.yml run webapp pipenv run flake8 --exclude=*/migrations/* --exclude node_modules/ --ignore=E501 .
+  - docker-compose -f docker-compose.yml -f docker-compose.ci.yml run worker /usr/local/bin/black --check .
+  - docker-compose -f docker-compose.yml -f docker-compose.ci.yml run worker pipenv run flake8 --exclude=*/migrations/* --exclude node_modules/ --ignore=E501 .

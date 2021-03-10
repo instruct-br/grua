@@ -167,7 +167,7 @@ class Parameter(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        re_pattern = "([a-zA-Z]+)\[(.+)\]"
+        re_pattern = r"([a-zA-Z]+)\[(.+)\]"
         match = re.search(re_pattern, self.value_type)
         if match is not None:
             self.value_type = match.group(1)
