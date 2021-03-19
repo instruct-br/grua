@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 Django = "~=2.2.0"
 psycopg2 = "~=2.7.5"
-djangorestframework = "~=3.11.0"
+djangorestframework = "~=3.11.2"
 django-filter = "~=2.2.0"
 faktory = "~=0.4.0"
 djangorestframework-yaml = "~=1.0.3"
